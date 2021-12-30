@@ -15,7 +15,7 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 RETRY_TIME = 600
-ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses'
+ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
 
@@ -32,9 +32,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s - %(time)s'
 )
 logger = logging.getLogger(__name__)
-logger.addHandler(
-    logging.StreamHandler()
-)
+logger.addHandler(logging.StreamHandler())
 
 
 class EmptyListOrDictionaryError(Exception):
@@ -69,12 +67,12 @@ def send_message(bot, message):
             f'Сообщение в Telegram не отправлено: {error}')
 
 
-def get_api_answer(url, current_timestamp):
+def get_api_answer(current_timestamp):
     """Осуществление запроса к эндпоинту API-сервиса."""
     timestamp = current_timestamp or int(time.time())
     payload = {'from_date': timestamp}
     try:
-        response = requests.get(url, headers=HEADERS, params=payload)
+        response = requests.get(ENDPOINT, headers=HEADERS, params=payload)
         if response.status_code != HTTPStatus.OK:
             url_error_message = (
                 f'Эндпоинт {ENDPOINT} недоступен.'
@@ -90,7 +88,7 @@ def get_api_answer(url, current_timestamp):
 
 def check_response(response):
     """Проверка ответа API на корректность."""
-    if response.get('homeworks') is None:
+    if response['homeworks'] is None:
         api_error_message = (
             'Response имеет некорректное значение '
             'или ошибка ключа "homeworks".')
@@ -98,11 +96,6 @@ def check_response(response):
         raise EmptyListOrDictionaryError(api_error_message)
     if response['homeworks'] == []:
         return {}
-    homework_status = response['homeworks'][0].get('status')
-    if homework_status not in HOMEWORK_STATUSES:
-        api_error_message = f'Ошибка статуса: {homework_status}'
-        logger.error(api_error_message)
-        raise IndefinеStatusError(api_error_message)
     return response['homeworks'][0]
 
 
@@ -148,7 +141,7 @@ def main():
     errors = True
     while True:
         try:
-            response = get_api_answer(ENDPOINT, current_timestamp)
+            response = get_api_answer(current_timestamp)
             homework = check_response(response)
             if homework and tmp_status != homework['status']:
                 message = parse_status(homework)
