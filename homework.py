@@ -102,6 +102,7 @@ def check_response(response):
         return {}
     if not isinstance(response['homeworks'], list):
         api_error_message = 'Ответ от API не является списком'
+        logger.error(api_error_message)
         raise EmptyListOrDictionaryError(api_error_message)
     return response['homeworks']
 
