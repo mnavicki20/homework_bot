@@ -100,13 +100,16 @@ def check_response(response):
         raise EmptyListOrDictionaryError(api_error_message)
     if response['homeworks'] == []:
         return {}
-    return response['homeworks'][0]
+    if not isinstance(response['homeworks'], list):
+        api_error_message = 'Ответ от API не является списком'
+        raise EmptyListOrDictionaryError(api_error_message)
+    return response['homeworks']
 
 
 def parse_status(homework):
     """Извлечение статуса конкретной домашней работы."""
-    homework_name = homework.get('homework_name')
-    homework_status = homework.get('status')
+    homework_name = homework['homework_name']
+    homework_status = homework['status']
     if homework_status is None:
         text_error = 'Ошибка: пустое значение "status".'
         raise IndefinеStatusError(text_error)
@@ -138,6 +141,7 @@ def check_tokens():
 def main():
     """Основная логика работы бота."""
     if not check_tokens():
+        logging.critical("Отсутствует переменная(-ные) окружения")
         exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
