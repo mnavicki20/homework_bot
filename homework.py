@@ -42,7 +42,6 @@ logger.addHandler(logging.StreamHandler())
 def send_message(bot, message):
     """Отправка сообщение в Telegram чат."""
     try:
-        bot = telegram.Bot(token=TELEGRAM_TOKEN)
         bot.send_message(TELEGRAM_CHAT_ID, text=message)
         logger.info(
             f'Отправлено сообщение в Telegram: {message}')
