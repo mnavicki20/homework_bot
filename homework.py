@@ -101,11 +101,11 @@ def parse_status(homework):
     """Извлечение статуса конкретной домашней работы."""
     try:
         homework_name = homework['homework_name']
-        homework_status = homework['status']
+        homework_status = homework.get('status')
         if homework_status is None:
             text_error = 'Ошибка: пустое значение "status".'
             raise IndefinеStatusError(text_error)
-        if homework_name is None:
+        if homework.get('homework_name') is None:
             text_error = 'Ошибка: пустое значение "homework_name".'
             raise IndefinеStatusError(text_error)
         verdict = VERDICTS[homework_status]
