@@ -71,24 +71,30 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверка ответа API на корректность."""
-    if response['homeworks'] is None:
-        api_error_message = (
-            'Response имеет некорректное значение '
-            'или ошибка ключа "homeworks".')
-        logger.error(api_error_message)
-        raise EmptyListOrDictionaryError(api_error_message)
+    try:
+        homeworks = response['homeworks']
+        if homeworks is None:
+            api_error_message = (
+                'Response имеет некорректное значение '
+                'или ошибка ключа "homeworks".')
+            logger.error(api_error_message)
+            raise EmptyListOrDictionaryError(api_error_message)
 
-    class blank_list():
-        def __init__(self, list):
-            self.list = []
+        class blank_list():
+            def __init__(self, list):
+                self.list = []
 
-    if isinstance(response['homeworks'], blank_list):
-        return {}
-    if not isinstance(response['homeworks'], list):
-        api_error_message = 'Ответ от API не является списком'
-        logger.error(api_error_message)
-        raise EmptyListOrDictionaryError(api_error_message)
-    return response['homeworks']
+        if isinstance(homeworks, blank_list):
+            return {}
+        if not isinstance(homeworks, list):
+            api_error_message = 'Ответ от API не является списком'
+            logger.error(api_error_message)
+            raise EmptyListOrDictionaryError(api_error_message)
+        return homeworks
+    except KeyError:
+        message = 'Запрошенный ключ отсуствует в полученном словаре'
+        logger.error(message)
+        raise KeyError
 
 
 def parse_status(homework):
