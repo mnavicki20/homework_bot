@@ -94,21 +94,26 @@ def check_response(response):
     except KeyError:
         message = 'Запрошенный ключ отсуствует в полученном словаре'
         logger.error(message)
-        raise KeyError
+        raise KeyError(message)
 
 
 def parse_status(homework):
     """Извлечение статуса конкретной домашней работы."""
-    homework_name = homework['homework_name']
-    homework_status = homework['status']
-    if homework_status is None:
-        text_error = 'Ошибка: пустое значение "status".'
-        raise IndefinеStatusError(text_error)
-    if homework_name is None:
-        text_error = 'Ошибка: пустое значение "homework_name".'
-        raise IndefinеStatusError(text_error)
-    verdict = VERDICTS[homework_status]
-    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
+    try:
+        homework_name = homework['homework_name']
+        homework_status = homework['status']
+        if homework_status is None:
+            text_error = 'Ошибка: пустое значение "status".'
+            raise IndefinеStatusError(text_error)
+        if homework_name is None:
+            text_error = 'Ошибка: пустое значение "homework_name".'
+            raise IndefinеStatusError(text_error)
+        verdict = VERDICTS[homework_status]
+        return f'Изменился статус проверки работы "{homework_name}". {verdict}'
+    except KeyError:
+        message = 'Запрошенный ключ отсуствует в полученном словаре'
+        logger.error(message)
+        raise KeyError(message)
 
 
 def check_tokens():
