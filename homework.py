@@ -77,7 +77,12 @@ def check_response(response):
             'или ошибка ключа "homeworks".')
         logger.error(api_error_message)
         raise EmptyListOrDictionaryError(api_error_message)
-    if response['homeworks'] == []:
+
+    class blank_list():
+        def __init__(self, list):
+            self.list = []
+
+    if isinstance(response['homeworks'], blank_list):
         return {}
     if not isinstance(response['homeworks'], list):
         api_error_message = 'Ответ от API не является списком'
