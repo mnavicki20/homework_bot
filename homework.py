@@ -7,6 +7,9 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
+from exceptions import (EmptyListOrDictionaryError, IndefinеStatusError,
+                        RequestExceptionError, ResponseStatusCodeError)
+
 load_dotenv()
 
 
@@ -34,30 +37,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
-
-
-class EmptyListOrDictionaryError(Exception):
-    """Пустой список или словарь."""
-
-    pass
-
-
-class ResponseStatusCodeError(Exception):
-    """Некорректный статус ответа сервера."""
-
-    pass
-
-
-class RequestExceptionError(Exception):
-    """Некорректный запрос."""
-
-    pass
-
-
-class IndefinеStatusError(Exception):
-    """Неопределённый статус ответа."""
-
-    pass
 
 
 def send_message(bot, message):
