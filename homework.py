@@ -100,7 +100,7 @@ def parse_status(homework):
         if homework_status is None:
             text_error = 'Ошибка: пустое значение "status".'
             raise IndefinеStatusError(text_error)
-        if homework.get('homework_name') is None:
+        if homework_name is None:
             text_error = 'Ошибка: пустое значение "homework_name".'
             raise IndefinеStatusError(text_error)
         verdict = VERDICTS[homework_status]
